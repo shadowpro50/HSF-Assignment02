@@ -30,7 +30,12 @@ public class RoleServiceImpl implements RoleService{
 
     @Override
     public Role update(int id, Role role) {
-        return roleRepository.save(role);
+        Role oldRole = findById(id);
+        if (oldRole == null) {
+            return null;
+        }
+        oldRole.setRoleName(role.getRoleName());
+        return roleRepository.save(oldRole);
     }
 
     @Override

@@ -25,30 +25,35 @@ public class LoginController {
     public String login(HttpSession session, @RequestParam String email, @RequestParam String password, Model model) {
         Account account = accountService.getLoginAccount(email, password);
         if (account == null) {
-            model.addAttribute("message", "Invalid email or password");
+            model.addAttribute("error", "Invalid email or password");
             return "login";
         }
         session.setAttribute("account", account);
         model.addAttribute("message", "logged in successfully");
-        return "redirect:/account/list";
+        return "redirect:/category/list";
     }
 
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model) {
+        model.addAttribute("account", new Account());
         return "register";
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("account") Account account, Model model) {
+    public String register(Account account, Model model) {
         if(accountService.isAccountExist(account.getEmail())){
-            model.addAttribute("message", "This email already exists");
+            model.addAttribute("error", "This email already exists");
             return "register";
         };
         accountService.registerAccount(account);
         model.addAttribute("message", "Registered Successfully");
         return "login";
+    }
 
-
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 
     @GetMapping("/403")

@@ -77,8 +77,9 @@ public class AccountController {
         if (account == null) {
             return "redirect:/account/list";
         }
+        Account account1 = accountService.getAccount(id);
         List<Role> list = roleService.findAll();
-        model.addAttribute("account", new Account());
+        model.addAttribute("account", account1);
         model.addAttribute("roles", list);
         return "account/update";
     }
@@ -107,5 +108,19 @@ public class AccountController {
         }
         accountService.deleteAccount(id);
         return "redirect:/account/list";
+    }
+
+    @GetMapping("/{id}")
+    public String view(@PathVariable("id") int id, Model model, HttpSession session) {
+        Account sessionAccount = (Account) session.getAttribute("account");
+        if (sessionAccount == null) {
+            return "redirect:/login";
+        }
+        if (sessionAccount.getRole().getRoleID() == 2) {
+            return "redirect:/403";
+        }
+        Account account = accountService.getAccount(id);
+        model.addAttribute("account", account);
+        return "account/view";
     }
 }

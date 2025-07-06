@@ -1,9 +1,10 @@
 package com.se192491.assignment02.controller;
 
 import com.se192491.assignment02.pojo.Account;
-import com.se192491.assignment02.pojo.Role;
-import com.se192491.assignment02.repository.RoleRepository;
-import com.se192491.assignment02.service.RoleService;
+import com.se192491.assignment02.pojo.Category;
+import com.se192491.assignment02.pojo.Orchid;
+import com.se192491.assignment02.service.CategoryService;
+import com.se192491.assignment02.service.OrchidService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/role")
-public class RoleController {
+@RequestMapping("/orchid")
+public class OrchidController {
     @Autowired
-    private RoleService roleService;
+    private OrchidService orchidService;
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/list")
     public String list(Model model, HttpSession session) {
@@ -30,9 +33,9 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        List<Role> roles = roleService.findAll();
-        model.addAttribute("roles", roles);
-        return "role/list";
+        List<Orchid> orchids = orchidService.findAll();
+        model.addAttribute("orchids", orchids);
+        return "orchid/list";
     }
 
     @GetMapping("/create")
@@ -44,12 +47,14 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        model.addAttribute("role", new Role());
-        return "role/create";
+        List<Category> list = categoryService.findAll();
+        model.addAttribute("orchid", new Orchid());
+        model.addAttribute("categories", list);
+        return "orchid/create";
     }
 
     @PostMapping("/create")
-    public String create(Model model, HttpSession session, Role role) {
+    public String create(Model model, HttpSession session, Orchid orchid) {
         Account sessionAccount = (Account) session.getAttribute("account");
         if (sessionAccount == null) {
             return "redirect:/login";
@@ -57,8 +62,8 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        roleService.save(role);
-        return "redirect:/role/list";
+        orchidService.save(orchid);
+        return "redirect:/orchid/list";
     }
 
     @GetMapping("/update/{id}")
@@ -70,16 +75,18 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        Role role = roleService.findById(id);
-        if (role == null) {
-            return "redirect:/role/list";
+        Orchid orchid = orchidService.findById(id);
+        if (orchid == null) {
+            return "redirect:/orchid/list";
         }
-        model.addAttribute("role", role);
-        return "role/update";
+        List<Category> list = categoryService.findAll();
+        model.addAttribute("orchid", new Orchid());
+        model.addAttribute("categories", list);
+        return "orchid/update";
     }
 
     @PostMapping("/update/{id}")
-    public String update(HttpSession session, @PathVariable int id, Role role) {
+    public String update(HttpSession session, @PathVariable int id, Orchid orchid) {
         Account sessionAccount = (Account) session.getAttribute("account");
         if (sessionAccount == null) {
             return "redirect:/login";
@@ -87,8 +94,8 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        roleService.update(id, role);
-        return "redirect:/role/list";
+        orchidService.update(id, orchid);
+        return "redirect:/orchid/list";
     }
 
     @GetMapping("/delete/{id}")
@@ -100,7 +107,7 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        roleService.delete(id);
-        return "redirect:/role/list";
+        orchidService.delete(id);
+        return "redirect:/orchid/list";
     }
 }

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết Category</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>Chi tiết Account</h2>
+<p><strong>ID:</strong> <span th:text="${account.getAccountID()}"></span></p>
+<p><strong>Name:</strong> <span th:text="${account.getAccountName()}"></span></p>
+<p><strong>Email:</strong> <span th:text="${account.getEmail()}"></span></p>
+<p><strong>Password:</strong> <span th:text="${account.getPassword()}"></span></p>
+<p><strong>Role:</strong> <span th:text="${account.getRole().getRoleName()}"></span></p>
+<a th:href="@{/account/list}">Quay lại danh sách</a>
+</body>
+</html>

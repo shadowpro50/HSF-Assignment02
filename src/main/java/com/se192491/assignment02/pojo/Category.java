@@ -19,4 +19,8 @@ public class Category {
     private int categoryID;
     @Column(name = "category_name")
     private String categoryName;
+
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }

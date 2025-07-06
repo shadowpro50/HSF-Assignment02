@@ -30,4 +30,13 @@ public class Orchid {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    public Orchid(boolean isNatural, String orchidDescription, String orchidName, String orchidUrl, int price, Category category) {
+        this.isNatural = isNatural;
+        this.orchidDescription = orchidDescription;
+        this.orchidName = orchidName;
+        this.orchidUrl = orchidUrl;
+        this.price = price;
+        this.category = category;
+    }
 }

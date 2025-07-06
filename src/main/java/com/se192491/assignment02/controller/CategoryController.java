@@ -1,9 +1,8 @@
 package com.se192491.assignment02.controller;
 
 import com.se192491.assignment02.pojo.Account;
-import com.se192491.assignment02.pojo.Role;
-import com.se192491.assignment02.repository.RoleRepository;
-import com.se192491.assignment02.service.RoleService;
+import com.se192491.assignment02.pojo.Category;
+import com.se192491.assignment02.service.CategoryService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/role")
-public class RoleController {
+@RequestMapping("/category")
+public class CategoryController {
     @Autowired
-    private RoleService roleService;
+    private CategoryService categoryService;
 
     @GetMapping("/list")
     public String list(Model model, HttpSession session) {
@@ -30,9 +29,9 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        List<Role> roles = roleService.findAll();
-        model.addAttribute("roles", roles);
-        return "role/list";
+        List<Category> categories = categoryService.findAll();
+        model.addAttribute("categories", categories);
+        return "category/list";
     }
 
     @GetMapping("/create")
@@ -44,12 +43,12 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        model.addAttribute("role", new Role());
-        return "role/create";
+        model.addAttribute("category", new Category());
+        return "category/create";
     }
 
     @PostMapping("/create")
-    public String create(Model model, HttpSession session, Role role) {
+    public String create(Model model, HttpSession session, Category category) {
         Account sessionAccount = (Account) session.getAttribute("account");
         if (sessionAccount == null) {
             return "redirect:/login";
@@ -57,8 +56,8 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        roleService.save(role);
-        return "redirect:/role/list";
+        categoryService.save(category);
+        return "redirect:/category/list";
     }
 
     @GetMapping("/update/{id}")
@@ -70,16 +69,16 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        Role role = roleService.findById(id);
-        if (role == null) {
-            return "redirect:/role/list";
+        Category category = categoryService.findById(id);
+        if (category == null) {
+            return "redirect:/category/list";
         }
-        model.addAttribute("role", role);
-        return "role/update";
+        model.addAttribute("category", category);
+        return "category/update";
     }
 
     @PostMapping("/update/{id}")
-    public String update(HttpSession session, @PathVariable int id, Role role) {
+    public String update(HttpSession session, @PathVariable int id, Category category) {
         Account sessionAccount = (Account) session.getAttribute("account");
         if (sessionAccount == null) {
             return "redirect:/login";
@@ -87,8 +86,8 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        roleService.update(id, role);
-        return "redirect:/role/list";
+        categoryService.update(id, category);
+        return "redirect:/category/list";
     }
 
     @GetMapping("/delete/{id}")
@@ -100,7 +99,7 @@ public class RoleController {
         if (sessionAccount.getRole().getRoleID() == 2) {
             return "redirect:/403";
         }
-        roleService.delete(id);
-        return "redirect:/role/list";
+        categoryService.delete(id);
+        return "redirect:/category/list";
     }
 }
