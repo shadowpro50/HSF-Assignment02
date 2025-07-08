@@ -31,6 +31,7 @@ public class RoleController {
             return "redirect:/403";
         }
         List<Role> roles = roleService.findAll();
+        model.addAttribute("account", sessionAccount);
         model.addAttribute("roles", roles);
         return "role/list";
     }

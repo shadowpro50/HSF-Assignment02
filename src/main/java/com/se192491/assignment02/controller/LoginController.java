@@ -30,7 +30,7 @@ public class LoginController {
         }
         session.setAttribute("account", account);
         model.addAttribute("message", "logged in successfully");
-        return "redirect:/category/list";
+        return "redirect:/";
     }
 
     @GetMapping("/register")

@@ -9,11 +9,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -34,6 +33,7 @@ public class OrchidController {
             return "redirect:/403";
         }
         List<Orchid> orchids = orchidService.findAll();
+        model.addAttribute("account", sessionAccount);
         model.addAttribute("orchids", orchids);
         return "orchid/list";
     }
@@ -63,6 +63,27 @@ public class OrchidController {
             return "redirect:/403";
         }
         orchidService.save(orchid);
+        return "redirect:/orchid/upload/" + orchid.getOrchidID();
+    }
+
+    @GetMapping("/upload/{id}")
+    public String upload(@PathVariable int id, Model model) {
+        Orchid orchid = orchidService.findById(id);
+
+        model.addAttribute("orchid", orchid); // Add the actual object, not Optional
+        model.addAttribute("orchidId", id);
+        return "orchid/upload";
+    }
+
+    @PostMapping("/upload/{id}")
+    public String uploadImage(@PathVariable int id,
+                              @RequestParam("imageFile") MultipartFile imageFile,
+                              Model model) throws IOException {
+        Boolean result = orchidService.upload(imageFile, id);
+        if (!result) {
+            model.addAttribute("message", "you have not uploaded your image or wrong id");
+            return "orchid/upload";
+        }
         return "redirect:/orchid/list";
     }
 
@@ -80,7 +101,7 @@ public class OrchidController {
             return "redirect:/orchid/list";
         }
         List<Category> list = categoryService.findAll();
-        model.addAttribute("orchid", new Orchid());
+        model.addAttribute("orchid", orchid);
         model.addAttribute("categories", list);
         return "orchid/update";
     }
@@ -99,7 +120,7 @@ public class OrchidController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(HttpSession session, @PathVariable int id) {
+    public String delete(HttpSession session, @PathVariable int id) throws IOException {
         Account sessionAccount = (Account) session.getAttribute("account");
         if (sessionAccount == null) {
             return "redirect:/login";
@@ -109,5 +130,17 @@ public class OrchidController {
         }
         orchidService.delete(id);
         return "redirect:/orchid/list";
+    }
+
+    @GetMapping("/{id}")
+    public String view(@PathVariable("id") int id, Model model, HttpSession session) {
+        Account sessionAccount = (Account) session.getAttribute("account");
+        if (sessionAccount == null) {
+            return "redirect:/login";
+        }
+        Orchid orchid = orchidService.findById(id);
+        model.addAttribute("account", sessionAccount);
+        model.addAttribute("orchid", orchid);
+        return "orchid/view";
     }
 }

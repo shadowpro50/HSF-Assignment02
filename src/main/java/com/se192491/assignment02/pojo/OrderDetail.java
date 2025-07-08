@@ -23,7 +23,7 @@ public class OrderDetail {
     private int price;
     @Column(name = "quantity")
     private int quantity;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 }

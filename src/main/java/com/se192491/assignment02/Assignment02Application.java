@@ -57,19 +57,19 @@ public class Assignment02Application implements CommandLineRunner {
             Orchid orchid1 = new Orchid(true,
                     "A classic moth orchid with long-lasting white flowers. Perfect for beginners and indoor spaces.",
                     "Phalaenopsis 'White Dream'",
-                    "https://example.com/images/phalaenopsis-white.jpg",
+                    "/images/OIP-1232882913.jpg",
                     25,
                     categoryService.findById(1));
             Orchid orchid2 = new Orchid(false,
                     "A vibrant purple Dendrobium with clustered blooms. Thrives in bright light.",
                     "Dendrobium 'Purple Rain'",
-                    "https://example.com/images/dendrobium-purple.jpg",
+                    "/images/OIP-2268632424.jpg",
                     30,
                     categoryService.findById(2));
             Orchid orchid3 = new Orchid(true,
                     "Golden-yellow 'Dancing Lady' orchid with a sweet vanilla-like fragrance.",
                     "Oncidium 'Sharry Baby'",
-                    "https://example.com/images/oncidium-yellow.jpg",
+                    "/images/OIP-3501435519.jpg",
                     35,
                     categoryService.findById(3)
             );

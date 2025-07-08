@@ -30,6 +30,7 @@ public class CategoryController {
             return "redirect:/403";
         }
         List<Category> categories = categoryService.findAll();
+        model.addAttribute("account", sessionAccount);
         model.addAttribute("categories", categories);
         return "category/list";
     }

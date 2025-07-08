@@ -32,6 +32,7 @@ public class AccountController {
         }
 
         List<Account> accounts = accountService.getAllAccounts();
+        model.addAttribute("account", sessionAccount);
         model.addAttribute("accounts", accounts);
         return "account/list";
     }
@@ -70,32 +71,54 @@ public class AccountController {
         if (sessionAccount == null) {
             return "redirect:/login";
         }
-        if (sessionAccount.getRole().getRoleID() == 2) {
+        if (sessionAccount.getRole().getRoleID() != 1 &&  // Not admin
+                sessionAccount.getAccountID() != id) {
             return "redirect:/403";
         }
         Account account = accountService.getAccount(id);
         if (account == null) {
-            return "redirect:/account/list";
+            return "redirect:/account/" + id;
         }
         Account account1 = accountService.getAccount(id);
         List<Role> list = roleService.findAll();
-        model.addAttribute("account", account1);
+        model.addAttribute("account", sessionAccount);
         model.addAttribute("roles", list);
         return "account/update";
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable("id") int id, @ModelAttribute Account account, HttpSession session) {
+    public String update(
+            @PathVariable("id") int id,
+            @ModelAttribute Account account,
+            HttpSession session) {
+
+        // Check if user is logged in
         Account sessionAccount = (Account) session.getAttribute("account");
         if (sessionAccount == null) {
             return "redirect:/login";
         }
-        if (sessionAccount.getRole().getRoleID() == 2) {
+
+        // Authorization check
+        if (sessionAccount.getRole().getRoleID() != 1 &&  // Not admin
+                sessionAccount.getAccountID() != id) {        // Not their own account
             return "redirect:/403";
         }
-        accountService.updateAccount(id, account);
-        return "redirect:/account/list";
-    }
+
+            // For non-admin users, ensure they can't change their role
+            if (sessionAccount.getRole().getRoleID() != 1) {
+                Account existingAccount = accountService.getAccount(id);
+                account.setRole(existingAccount.getRole());
+            }
+
+            Account newSessionAccount = accountService.updateAccount(id, account);
+
+            // Update session if user is updating their own account
+            if (sessionAccount.getAccountID() == id) {
+                session.setAttribute("account", newSessionAccount);
+            }
+            return "redirect:/account/" + id;
+        }
+
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") int id, HttpSession session) {
@@ -116,7 +139,8 @@ public class AccountController {
         if (sessionAccount == null) {
             return "redirect:/login";
         }
-        if (sessionAccount.getRole().getRoleID() == 2) {
+        if (sessionAccount.getRole().getRoleID() != 1 &&  // Not admin
+                sessionAccount.getAccountID() != id) {
             return "redirect:/403";
         }
         Account account = accountService.getAccount(id);
